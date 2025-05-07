@@ -1,8 +1,24 @@
-resource "aws_s3_bucket" "insecure_bucket" {
-  bucket = "my-insecure-bucket-dev"
-  acl    = "public-read"  #tfsec will flag this
+terraform {
+  required_version = ">= 1.3.0"
 
-  tags = {
-    Environment = "dev"
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.0"
+    }
   }
 }
+
+provider "aws" {
+  region = "us-east-2"
+}
+
+resource "aws_s3_bucket" "insecure_bucket" {
+  bucket = "my-insecure-bucket-dev"
+}
+
+resource "aws_s3_bucket_acl" "this" {
+  bucket = aws_s3_bucket.insecure_bucket.id
+  acl    = "public-read"
+}
+
