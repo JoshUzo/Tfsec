@@ -43,8 +43,10 @@ jobs:
     - name: Terraform Plan
       run: terraform plan
 
-    - name: Run tfsec Security Scan
-      uses: aquasecurity/tfsec-action@v1.0.0
+    - name: Run tfsec with SARIF output
+      run: tfsec --format sarif --out tfsec-results.sarif
+
+    - name: Upload tfsec SARIF to GitHub Security Dashboard
+      uses: github/codeql-action/upload-sarif@v2
       with:
-        additional_args: "--minimum-severity HIGH"
-        working_directory: environments/dev
+        sarif_file: tfsec-results.sarif
