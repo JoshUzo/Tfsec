@@ -43,6 +43,12 @@ jobs:
     - name: Terraform Plan
       run: terraform plan
 
+    - name: Install tfsec
+      run: |
+        curl -sSL https://github.com/aquasecurity/tfsec/releases/latest/download/tfsec-linux-amd64 -o tfsec
+        chmod +x tfsec
+        sudo mv tfsec /usr/local/bin/
+        
     - name: Run tfsec and save JSON report
       run: tfsec --format json --out tfsec-results.json
 
