@@ -13,7 +13,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: environments/dev
+        working-directory: Tfsec/environments/dev
 
     steps:
     - name: Checkout code
@@ -50,16 +50,14 @@ jobs:
         sudo mv tfsec /usr/local/bin/
         
     - name: Run tfsec and save JSON report
-      run: tfsec --format json --out ../tfsec-results.json
+      run: tfsec --format json --out tfsec-results.json
       continue-on-error: true
-
-    - name: Copy tfsec report into current directory
-      run: cp ../tfsec-results.json tfsec-results.json
 
     - name: Upload tfsec report
       uses: actions/upload-artifact@v4
       with:
         name: tfsec-results
-        path: tfsec-results.json
+        path: Tfsec/environments/dev/tfsec-results.json
+
 
 
