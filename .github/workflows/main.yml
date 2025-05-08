@@ -62,7 +62,7 @@ jobs:
     - name: Upload tfsec JSON report to S3
       run: |
         TIMESTAMP=$(date +%Y%m%d-%H%M%S)
-        aws s3 cp environments/dev/tfsec-results.json s3://tfsec-logs-bucket/tfsec-results-$TIMESTAMP.json
+        aws s3 cp tfsec-results.json s3://tfsec-logs-bucket/tfsec-results-$TIMESTAMP.json
 
 
 
