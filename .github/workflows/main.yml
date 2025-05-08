@@ -49,17 +49,19 @@ jobs:
         chmod +x tfsec
         sudo mv tfsec /usr/local/bin/
         
-    - name: Run tfsec and save JSON report
+    - name: Run tfsec and generate report
+      id: tfsec
       run: |
-        tfsec --format json --out tfsec-results.json || true
+        tfsec --format json --out tfsec-results.json
 
     - name: Upload tfsec report as artifact
+      if: always()  # ensures this runs even if tfsec fails
       uses: actions/upload-artifact@v4
       with:
         name: tfsec-results
         path: environments/dev/tfsec-results.json
 
-    - name: Upload tfsec JSON report to S3
+    - name: Upload tfsec report to S3
       if: always()
       run: |
         TIMESTAMP=$(date +%Y%m%d-%H%M%S)
