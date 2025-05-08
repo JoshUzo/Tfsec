@@ -50,19 +50,21 @@ jobs:
         sudo mv tfsec /usr/local/bin/
         
     - name: Run tfsec and save JSON report
-      run: tfsec --format json --out tfsec-results.json
-      continue-on-error: true
+      run: |
+        tfsec --format json --out tfsec-results.json || true
 
-    - name: Upload tfsec report
+    - name: Upload tfsec report as artifact
       uses: actions/upload-artifact@v4
       with:
         name: tfsec-results
         path: environments/dev/tfsec-results.json
 
     - name: Upload tfsec JSON report to S3
+      if: always()
       run: |
         TIMESTAMP=$(date +%Y%m%d-%H%M%S)
         aws s3 cp tfsec-results.json s3://tfsec-logs-bucket/tfsec-results-$TIMESTAMP.json
+
 
 
 
