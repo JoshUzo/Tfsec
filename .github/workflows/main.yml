@@ -59,5 +59,10 @@ jobs:
         name: tfsec-results
         path: environments/dev/tfsec-results.json
 
+    - name: Upload tfsec results to S3
+      run: |
+        TIMESTAMP=$(date +%Y-%m-%d-%H%M%S)
+        aws s3 cp tfsec-output/tfsec-results.json s3://tfsec-logs-bucket/tfsec-results/dev/$TIMESTAMP/tfsec-results.json
+
 
 
