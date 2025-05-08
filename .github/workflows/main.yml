@@ -57,6 +57,5 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: tfsec-results
-        path: tfsec-results.json
-
+        path: ../tfsec-results.json
 
