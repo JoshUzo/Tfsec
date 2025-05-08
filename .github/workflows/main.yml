@@ -13,7 +13,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: Tfsec/environments/dev
+        working-directory: environments/dev
 
     steps:
     - name: Checkout code
