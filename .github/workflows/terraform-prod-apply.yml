@@ -16,15 +16,15 @@ jobs:
         working-directory: environments/prod
 
     steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
     - name: Check confirmation input
       run: |
         if [ "${{ github.event.inputs.confirm_apply }}" != "yes" ]; then
           echo "You must confirm with 'yes' to apply to prod."
           exit 1
         fi
-
-    - name: Checkout code
-      uses: actions/checkout@v4
 
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v2
