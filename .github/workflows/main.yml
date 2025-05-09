@@ -1,10 +1,17 @@
 name: Terraform CI for Dev Environment
 
 on:
-  pull_request:
-    branches: [main]
   push:
     branches: [main]
+    paths:
+      - 'environments/dev/**'
+      - '.github/workflows/main.yml'
+      
+  pull_request:
+    branches: [main]
+    paths:
+      - 'environments/dev/**'
+      - '.github/workflows/main.yml'
 
 jobs:
   terraform-dev:
