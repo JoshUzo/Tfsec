@@ -3,21 +3,18 @@ name: Terraform CI for Dev Environment
 on:
   push:
     branches: [main]
-    paths:
-      - 'environments/dev/**'
-      - '.github/workflows/main.yml'
       
   pull_request:
     branches: [main]
-    paths:
-      - 'environments/dev/**'
-      - '.github/workflows/main.yml'
-
+    
 jobs:
   terraform-dev:
     name: Terraform Plan + tfsec (Dev)
     runs-on: ubuntu-latest
-
+    env:
+      AWS_REGION: "us-east-2"
+      S3_BUCKET: "tfsec-logs-bucket"  
+    
     defaults:
       run:
         working-directory: environments/dev
@@ -39,7 +36,7 @@ jobs:
       with:
         aws-access-key-id: ${{ secrets.ACCESS_KEY }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: us-east-2
+        aws-region: $AWS_REGION
 
     - name: Terraform Init
       run: terraform init
@@ -72,7 +69,8 @@ jobs:
       if: always()
       run: |
         TIMESTAMP=$(date +%Y%m%d-%H%M%S)
-        aws s3 cp tfsec-results.json s3://tfsec-logs-bucket/tfsec-results-$TIMESTAMP.json
+        COMMIT_ID=${GITHUB_SHA::7}
+        aws s3 cp tfsec-results.json s3://$S3_BUCKET/tfsec-results-$TIMESTAMP.json
 
 
 
