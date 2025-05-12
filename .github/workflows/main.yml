@@ -69,9 +69,18 @@ jobs:
       if: always()
       run: |
         TIMESTAMP=$(date +%Y%m%d-%H%M%S)
-        COMMIT_ID=${{ github.event.pull_request.head.sha }}
+
+         # Determine commit ID based on event type
+        if [ "${{ github.event_name }}" = "pull_request" ]; then
+          COMMIT_ID="${{ github.event.pull_request.head.sha }}"
+        else
+          COMMIT_ID="${{ github.sha }}"
+        fi
+
         COMMIT_SHORT=${COMMIT_ID::7}
-        aws s3 cp tfsec-results.json s3://$S3_BUCKET/tfsec-results-$TIMESTAMP.json
+        echo "Uploading with commit ID: $COMMIT_SHORT"
+
+        aws s3 cp tfsec-results.json s3://$S3_BUCKET/tfsec-results-$TIMESTAMP-$COMMIT_SHORT.json
 
 
 
