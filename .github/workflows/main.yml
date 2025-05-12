@@ -69,7 +69,8 @@ jobs:
       if: always()
       run: |
         TIMESTAMP=$(date +%Y%m%d-%H%M%S)
-        COMMIT_ID=${GITHUB_SHA::7}
+        COMMIT_ID=${{ github.event.pull_request.head.sha }}
+        COMMIT_SHORT=${COMMIT_ID::7}
         aws s3 cp tfsec-results.json s3://$S3_BUCKET/tfsec-results-$TIMESTAMP.json
 
 
