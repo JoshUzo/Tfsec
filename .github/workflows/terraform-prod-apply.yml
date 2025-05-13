@@ -1,15 +1,18 @@
-name: Terraform Apply (Prod - Manual Confirmation)
+name: Terraform Apply (Production)
 
 on:
-  workflow_dispatch:
-    inputs:
-      confirm_apply:
-        description: "Type 'yes' to confirm you want to apply to production"
-        required: true
+  workflow_dispatch:  # Manually triggered
 
 jobs:
   terraform-apply-prod:
+    name: Terraform Plan and Apply (Prod)
     runs-on: ubuntu-latest
+    env:
+      AWS_REGION: "us-east-2"
+      
+    environment:
+      name: prod
+      url: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
     defaults:
       run:
@@ -19,28 +22,27 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Check confirmation input
-      run: |
-        if [ "${{ github.event.inputs.confirm_apply }}" != "yes" ]; then
-          echo "You must confirm with 'yes' to apply to prod."
-          exit 1
-        fi
-
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_wrapper: false
 
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v2
       with:
         aws-access-key-id: ${{ secrets.ACCESS_KEY }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: us-east-2
+        aws-region: ${{ env.AWS_REGION }}
 
     - name: Terraform Init
       run: terraform init
+
+    - name: Terraform Validate
+      run: terraform validate
 
     - name: Terraform Plan
       run: terraform plan
 
     - name: Terraform Apply
       run: terraform apply -auto-approve
+
